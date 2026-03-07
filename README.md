@@ -132,9 +132,7 @@ NSSM 工具采用 GPL v2 许可证，详见 [NSSM 官网](https://nssm.cc/)。
 ## 🤝 贡献
 
 欢迎提交 Issue 和 Pull Request！
-
----
-
+<p align="center">Made with ❤️ by OpenClaw</p>
 ---
 
 ## ☕ 支持开发者
@@ -152,4 +150,4 @@ NSSM 工具采用 GPL v2 许可证，详见 [NSSM 官网](https://nssm.cc/)。
 ---
 
 
-<p align="center">Made with ❤️ by OpenClaw</p>
+

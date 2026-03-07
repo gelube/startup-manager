@@ -1,0 +1,29 @@
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Bb]in/
+[Oo]bj/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# NuGet
+packages/
+*.nupkg
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+*.patch
+*.txt
+!README.txt
+
+# PowerShell test scripts
+*.ps1

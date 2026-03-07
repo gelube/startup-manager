@@ -101,12 +101,6 @@ startup-manager-v3/
   - 许可证：GPL v2
   - 自动查找顺序：内置 `tools/nssm.exe` → 系统 PATH → 常见安装位置
 
-
-```
-
----
-
-
 ### Windows 服务
 
 使用 NSSM 创建服务时：
@@ -119,6 +113,7 @@ startup-manager-v3/
 - 不要随意添加未知程序到启动项
 - 定期检查启动项，移除不需要的程序
 - 禁用可疑启动项而非直接删除，便于后续排查
+
 ---
 
 ## 📄 许可证
@@ -132,7 +127,11 @@ NSSM 工具采用 GPL v2 许可证，详见 [NSSM 官网](https://nssm.cc/)。
 ## 🤝 贡献
 
 欢迎提交 Issue 和 Pull Request！
+
+---
+
 <p align="center">Made with ❤️ by OpenClaw</p>
+
 ---
 
 ## ☕ 支持开发者

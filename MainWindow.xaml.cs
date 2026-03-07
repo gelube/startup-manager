@@ -619,24 +619,11 @@ namespace StartupManagerPro
                 var root = item.RegistryRoot == "HKLM" ? Registry.LocalMachine : Registry.CurrentUser;
                 var runPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
                 
-                // 先从 Run 键删除
-                using (var key = root.OpenSubKey(runPath, true))
+                using var key = root.OpenSubKey(runPath, true);
+                if (key != null && key.GetValue(item.Name) != null)
                 {
-                    if (key != null && key.GetValue(item.Name) != null)
-                    {
-                        key.DeleteValue(item.Name);
-                        return true;
-                    }
-                }
-                
-                // 如果不在 Run 键，尝试从 Disabled 备份位置删除
-                using (var disabledKey = root.OpenSubKey(DisabledRegistrySubKey, true))
-                {
-                    if (disabledKey != null && disabledKey.GetValue(item.Name) != null)
-                    {
-                        disabledKey.DeleteValue(item.Name);
-                        return true;
-                    }
+                    key.DeleteValue(item.Name);
+                    return true;
                 }
             }
             catch (Exception ex) { LogError($"删除注册表启动项失败：{ex.Message}"); }

@@ -44,17 +44,17 @@ namespace StartupManagerPro
             var selectedItem = StartupGrid.SelectedItem as StartupItem;
             if (selectedItem == null)
             {
-                // 没有选中项时，按钮可用
-                EnableBtn.IsEnabled = true;
-                DisableBtn.IsEnabled = true;
+                // 没有选中项时，按钮显示
+                EnableBtn.Visibility = Visibility.Visible;
+                DisableBtn.Visibility = Visibility.Visible;
                 return;
             }
             
             bool isRegistry = (selectedItem.Source == "Registry");
             
-            // 注册表项：启用/禁用按钮变灰
-            EnableBtn.IsEnabled = !isRegistry;
-            DisableBtn.IsEnabled = !isRegistry;
+            // 注册表项：隐藏启用/禁用按钮
+            EnableBtn.Visibility = isRegistry ? Visibility.Collapsed : Visibility.Visible;
+            DisableBtn.Visibility = isRegistry ? Visibility.Collapsed : Visibility.Visible;
         }
 
         private void InitializeCategories()
@@ -897,17 +897,15 @@ namespace StartupManagerPro
             var startMenu = contextMenu.Items.OfType<MenuItem>().FirstOrDefault(m => m.Header.ToString() == "启动");
             
             // 服务：隐藏启用/禁用，显示服务专用菜单
-            // 注册表：启用/禁用变灰
+            // 注册表：隐藏启用/禁用（没有实际用途）
             // 其他：启用/禁用可用
             if (enableMenu != null)
             {
-                enableMenu.Visibility = isService ? Visibility.Collapsed : Visibility.Visible;
-                enableMenu.IsEnabled = !isRegistry;
+                enableMenu.Visibility = (isService || isRegistry) ? Visibility.Collapsed : Visibility.Visible;
             }
             if (disableMenu != null)
             {
-                disableMenu.Visibility = isService ? Visibility.Collapsed : Visibility.Visible;
-                disableMenu.IsEnabled = !isRegistry;
+                disableMenu.Visibility = (isService || isRegistry) ? Visibility.Collapsed : Visibility.Visible;
             }
             
             // 服务专用菜单

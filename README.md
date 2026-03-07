@@ -1,4 +1,4 @@
-<img width="1118" height="1524" alt="3e7fb03d56b58b7e4db05d51a592698a" src="https://github.com/user-attachments/assets/592d0c90-cb3e-4842-9ff0-bf92ee04a60b" /># Startup Manager Pro v3.0
+# Startup Manager Pro v3.0
 
 🚀 一款现代化的 Windows 启动项管理工具，支持注册表、启动文件夹、计划任务和 Windows 服务四种启动方式的管理。
 
@@ -144,7 +144,7 @@ NSSM 工具采用 GPL v2 许可证，详见 [NSSM 官网](https://nssm.cc/)。
 **微信赞赏**
 > 扫码打赏，金额随意，感谢支持！
 
-<img width="1118" height="1524" alt="3e7fb03d56b58b7e4db05d51a592698a" src="https://github.com/user-attachments/assets/470d30b3-3b01-4377-b3b5-dcde558e2977" />
+<img width="400" height="600" alt="3e7fb03d56b58b7e4db05d51a592698a" src="https://github.com/user-attachments/assets/592d0c90-cb3e-4842-9ff0-bf92ee04a60b" />
 
 
 如果工具帮你节省了时间，或者解决了问题，这就是对我最大的鼓励。

@@ -142,7 +142,7 @@ NSSM 工具采用 GPL v2 许可证，详见 [NSSM 官网](https://nssm.cc/)。
 **微信赞赏**
 > 扫码打赏，金额随意，感谢支持！
 
-<img width="400" height="600" alt="3e7fb03d56b58b7e4db05d51a592698a" src="https://github.com/user-attachments/assets/592d0c90-cb3e-4842-9ff0-bf92ee04a60b" />
+![微信赞赏](assets/wechat-pay.jpg)
 
 
 如果工具帮你节省了时间，或者解决了问题，这就是对我最大的鼓励。

@@ -778,14 +778,61 @@ namespace StartupManagerPro
         {
             try
             {
-                if (StartupGrid.SelectedItem is StartupItem item && 
-                    !string.IsNullOrEmpty(item.Path) && 
-                    File.Exists(item.Path))
+                if (StartupGrid.SelectedItem is StartupItem item && !string.IsNullOrEmpty(item.Path))
                 {
-                    Process.Start("explorer.exe", $"/select,\"{item.Path}\"");
+                    // 提取实际的可执行文件路径（去除参数）
+                    var exePath = ExtractExePath(item.Path);
+                    
+                    if (File.Exists(exePath))
+                    {
+                        Process.Start("explorer.exe", $"/select,\"{exePath}\"");
+                    }
+                    else if (Directory.Exists(exePath))
+                    {
+                        Process.Start("explorer.exe", exePath);
+                    }
+                    else
+                    {
+                        MessageBox.Show($"路径不存在：{exePath}", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
                 }
             }
             catch (Exception ex) { Debug.WriteLine($"[OpenLocation_Click] Error: {ex.Message}"); }
+        }
+
+        // 从路径中提取实际的可执行文件路径（去除参数）
+        private string ExtractExePath(string path)
+        {
+            if (string.IsNullOrEmpty(path)) return "";
+            
+            // 去除引号
+            path = path.Trim('"');
+            
+            // 如果路径包含空格和参数，提取 .exe 部分
+            if (path.Contains(".exe"))
+            {
+                var exeIndex = path.IndexOf(".exe", StringComparison.OrdinalIgnoreCase);
+                if (exeIndex > 0)
+                {
+                    var exePath = path.Substring(0, exeIndex + 4);
+                    // 检查是否有引号包裹
+                    if (exePath.StartsWith("\"") && !exePath.EndsWith("\""))
+                    {
+                        exePath = exePath.TrimStart('"');
+                    }
+                    return exePath;
+                }
+            }
+            
+            // 如果路径包含空格，取第一个空格前的部分
+            var spaceIndex = path.IndexOf(' ');
+            if (spaceIndex > 0)
+            {
+                var firstPart = path.Substring(0, spaceIndex);
+                if (File.Exists(firstPart)) return firstPart;
+            }
+            
+            return path;
         }
 
         private void Properties_Click(object sender, RoutedEventArgs e)

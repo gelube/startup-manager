@@ -26,6 +26,35 @@ namespace StartupManagerPro
             {
                 StartupGrid.ContextMenu.ContextMenuOpening += ContextMenu_Opening;
             }
+            
+            // 添加选择变化事件处理
+            StartupGrid.SelectionChanged += StartupGrid_SelectionChanged;
+        }
+
+        private void StartupGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // 更新工具栏按钮状态
+            UpdateToolbarButtonStates();
+        }
+
+        private void UpdateToolbarButtonStates()
+        {
+            if (StartupGrid == null || EnableBtn == null || DisableBtn == null) return;
+            
+            var selectedItem = StartupGrid.SelectedItem as StartupItem;
+            if (selectedItem == null)
+            {
+                // 没有选中项时，按钮可用
+                EnableBtn.IsEnabled = true;
+                DisableBtn.IsEnabled = true;
+                return;
+            }
+            
+            bool isRegistry = (selectedItem.Source == "Registry");
+            
+            // 注册表项：启用/禁用按钮变灰
+            EnableBtn.IsEnabled = !isRegistry;
+            DisableBtn.IsEnabled = !isRegistry;
         }
 
         private void InitializeCategories()

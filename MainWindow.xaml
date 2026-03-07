@@ -145,10 +145,10 @@
         <!-- 顶部工具栏 -->
         <Border Grid.Row="1" Style="{StaticResource CardStyle}" Padding="16,12" Margin="16,16,16,0">
             <StackPanel Orientation="Horizontal">
-                <Button Content="添加" Style="{StaticResource PrimaryButtonStyle}" Click="AddNew_Click"/>
-                <Button Content="启用" Style="{StaticResource SuccessButtonStyle}" Click="Enable_Click"/>
-                <Button Content="禁用" Style="{StaticResource WarningButtonStyle}" Click="Disable_Click"/>
-                <Button Content="删除" Style="{StaticResource DangerButtonStyle}" Click="Delete_Click"/>
+                <Button x:Name="AddBtn" Content="添加" Style="{StaticResource PrimaryButtonStyle}" Click="AddNew_Click"/>
+                <Button x:Name="EnableBtn" Content="启用" Style="{StaticResource SuccessButtonStyle}" Click="Enable_Click"/>
+                <Button x:Name="DisableBtn" Content="禁用" Style="{StaticResource WarningButtonStyle}" Click="Disable_Click"/>
+                <Button x:Name="DeleteBtn" Content="删除" Style="{StaticResource DangerButtonStyle}" Click="Delete_Click"/>
                 <Separator Margin="16,0" Background="#DCDFE6"/>
                 <Border Background="#F5F7FA" CornerRadius="6" Padding="12,2" BorderBrush="#DCDFE6" BorderThickness="1">
                     <TextBox x:Name="SearchBox" Width="300" Padding="12,8" BorderThickness="0" Background="Transparent" FontSize="13" Foreground="#333" CaretBrush="#409EFF" TextChanged="SearchBox_TextChanged"/>

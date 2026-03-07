@@ -16,9 +16,6 @@ namespace StartupManagerPro
         private ObservableCollection<CategoryItem> categories = new();
         private string currentCategory = "All";
 
-        // 注册表备份位置（存储被禁用的启动项）
-        private const string DisabledRegistrySubKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run-Disabled";
-
         public MainWindow()
         {
             InitializeComponent();
@@ -60,52 +57,26 @@ namespace StartupManagerPro
         {
             try
             {
-                // 加载启用的启动项
                 using var key = root.OpenSubKey(subKey);
-                if (key != null)
+                if (key == null) return;
+                
+                foreach (var valueName in key.GetValueNames())
                 {
-                    foreach (var valueName in key.GetValueNames())
+                    var value = key.GetValue(valueName)?.ToString();
+                    if (string.IsNullOrEmpty(value)) continue;
+                    startupItems.Add(new StartupItem
                     {
-                        var value = key.GetValue(valueName)?.ToString();
-                        if (string.IsNullOrEmpty(value)) continue;
-                        startupItems.Add(new StartupItem
-                        {
-                            Name = valueName,
-                            Path = value,
-                            Location = location,
-                            Source = "Registry",
-                            IsEnabled = true,
-                            Publisher = GetPublisher(value),
-                            StartupImpact = GetStartupImpact(value),
-                            StatusText = "已启用",
-                            CategoryType = "Registry",
-                            RegistryRoot = root == Registry.CurrentUser ? "HKCU" : "HKLM"
-                        });
-                    }
-                }
-
-                // 加载被禁用的启动项（从备份位置）
-                using var disabledKey = root.OpenSubKey(DisabledRegistrySubKey);
-                if (disabledKey != null)
-                {
-                    foreach (var valueName in disabledKey.GetValueNames())
-                    {
-                        var value = disabledKey.GetValue(valueName)?.ToString();
-                        if (string.IsNullOrEmpty(value)) continue;
-                        startupItems.Add(new StartupItem
-                        {
-                            Name = valueName,
-                            Path = value,
-                            Location = location + " (已禁用)",
-                            Source = "Registry",
-                            IsEnabled = false,
-                            Publisher = GetPublisher(value),
-                            StartupImpact = GetStartupImpact(value),
-                            StatusText = "已禁用",
-                            CategoryType = "Registry",
-                            RegistryRoot = root == Registry.CurrentUser ? "HKCU" : "HKLM"
-                        });
-                    }
+                        Name = valueName,
+                        Path = value,
+                        Location = location,
+                        Source = "Registry",
+                        IsEnabled = true,
+                        Publisher = GetPublisher(value),
+                        StartupImpact = GetStartupImpact(value),
+                        StatusText = "已启用",
+                        CategoryType = "Registry",
+                        RegistryRoot = root == Registry.CurrentUser ? "HKCU" : "HKLM"
+                    });
                 }
             }
             catch (Exception ex) { LogError($"注册表加载失败：{ex.Message}"); }
@@ -405,15 +376,6 @@ namespace StartupManagerPro
                 {
                     switch (item.CategoryType)
                     {
-                        case "Registry":
-                            // 从备份位置移回 Run 键
-                            if (EnableRegistryItem(item))
-                            {
-                                successCount++;
-                                Logger.Info($"注册表启用成功：{item.Name}");
-                            }
-                            break;
-
                         case "Task":
                             var taskName = item.Name.Replace("任务 ", "");
                             RunCommand("schtasks", $"/Change /TN \"{taskName}\" /Enable");
@@ -433,10 +395,15 @@ namespace StartupManagerPro
                             item.StatusText = "已启用";
                             successCount++;
                             break;
+                        
+                        // 注册表不支持启用/禁用
+                        case "Registry":
+                            break;
                     }
                 }
                 LoadAllItems();
-                MessageBox.Show($"成功启用 {successCount} 个启动项", "完成", MessageBoxButton.OK, MessageBoxImage.Information);
+                if (successCount > 0)
+                    MessageBox.Show($"成功启用 {successCount} 个启动项", "完成", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
@@ -460,15 +427,6 @@ namespace StartupManagerPro
                 {
                     switch (item.CategoryType)
                     {
-                        case "Registry":
-                            // 从 Run 键移动到备份位置
-                            if (DisableRegistryItem(item))
-                            {
-                                successCount++;
-                                Logger.Info($"注册表禁用成功：{item.Name}");
-                            }
-                            break;
-
                         case "Task":
                             var taskName = item.Name.Replace("任务 ", "");
                             RunCommand("schtasks", $"/Change /TN \"{taskName}\" /Disable");
@@ -488,105 +446,19 @@ namespace StartupManagerPro
                             item.StatusText = "已禁用";
                             successCount++;
                             break;
+                        
+                        // 注册表不支持启用/禁用
+                        case "Registry":
+                            break;
                     }
                 }
                 LoadAllItems();
-                MessageBox.Show($"成功禁用 {successCount} 个启动项", "完成", MessageBoxButton.OK, MessageBoxImage.Information);
+                if (successCount > 0)
+                    MessageBox.Show($"成功禁用 {successCount} 个启动项", "完成", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex) 
             { 
                 LogError($"禁用失败：{ex.Message}"); 
-            }
-        }
-
-        // 禁用注册表启动项：从 Run 移动到 Run-Disabled
-        private bool DisableRegistryItem(StartupItem item)
-        {
-            try
-            {
-                var root = item.RegistryRoot == "HKLM" ? Registry.LocalMachine : Registry.CurrentUser;
-                var runPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
-
-                // 1. 从 Run 键读取值
-                using (var runKey = root.OpenSubKey(runPath, true))
-                {
-                    if (runKey == null || runKey.GetValue(item.Name) == null)
-                    {
-                        Logger.Warning($"注册表项不存在：{item.Name}");
-                        return false;
-                    }
-
-                    var value = runKey.GetValue(item.Name)?.ToString();
-
-                    // 2. 保存到 Disabled 备份位置
-                    using (var disabledKey = root.CreateSubKey(DisabledRegistrySubKey, true))
-                    {
-                        disabledKey?.SetValue(item.Name, value);
-                        Logger.Info($"已备份到 Disabled：{item.Name} = {value}");
-                    }
-
-                    // 3. 从 Run 键删除
-                    runKey.DeleteValue(item.Name);
-                    Logger.Info($"已从 Run 删除：{item.Name}");
-                }
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Logger.Error($"禁用注册表项失败：{item.Name} - {ex.Message}");
-                MessageBox.Show($"禁用失败：{ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return false;
-            }
-        }
-
-        // 启用注册表启动项：从 Run-Disabled 移回 Run
-        private bool EnableRegistryItem(StartupItem item)
-        {
-            try
-            {
-                var root = item.RegistryRoot == "HKLM" ? Registry.LocalMachine : Registry.CurrentUser;
-                var runPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
-
-                // 1. 从 Disabled 备份位置读取值
-                using (var disabledKey = root.OpenSubKey(DisabledRegistrySubKey, true))
-                {
-                    if (disabledKey == null || disabledKey.GetValue(item.Name) == null)
-                    {
-                        // 可能已经在 Run 键中，检查一下
-                        using (var runKey = root.OpenSubKey(runPath))
-                        {
-                            if (runKey?.GetValue(item.Name) != null)
-                            {
-                                Logger.Info($"项已存在于 Run 中：{item.Name}");
-                                return true;
-                            }
-                        }
-                        Logger.Warning($"备份项不存在：{item.Name}");
-                        return false;
-                    }
-
-                    var value = disabledKey.GetValue(item.Name)?.ToString();
-
-                    // 2. 写回 Run 键
-                    using (var runKey = root.CreateSubKey(runPath, true))
-                    {
-                        runKey?.SetValue(item.Name, value);
-                        Logger.Info($"已恢复到 Run：{item.Name} = {value}");
-                    }
-
-                    // 3. 从备份位置删除
-                    disabledKey.DeleteValue(item.Name);
-                    Logger.Info($"已从 Disabled 删除：{item.Name}");
-                }
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Logger.Error($"启用注册表项失败：{item.Name} - {ex.Message}");
-                MessageBox.Show($"启用失败：{ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                return false;
             }
         }
 
@@ -949,6 +821,7 @@ namespace StartupManagerPro
             if (selectedItem == null) return;
             
             bool isService = (selectedItem.Source == "Service");
+            bool isRegistry = (selectedItem.Source == "Registry");
             
             var contextMenu = sender as ContextMenu;
             if (contextMenu == null) return;
@@ -960,8 +833,21 @@ namespace StartupManagerPro
             var stopMenu = contextMenu.Items.OfType<MenuItem>().FirstOrDefault(m => m.Header.ToString() == "停止");
             var startMenu = contextMenu.Items.OfType<MenuItem>().FirstOrDefault(m => m.Header.ToString() == "启动");
             
-            if (enableMenu != null) enableMenu.Visibility = isService ? Visibility.Collapsed : Visibility.Visible;
-            if (disableMenu != null) disableMenu.Visibility = isService ? Visibility.Collapsed : Visibility.Visible;
+            // 服务：隐藏启用/禁用，显示服务专用菜单
+            // 注册表：启用/禁用变灰
+            // 其他：启用/禁用可用
+            if (enableMenu != null)
+            {
+                enableMenu.Visibility = isService ? Visibility.Collapsed : Visibility.Visible;
+                enableMenu.IsEnabled = !isRegistry;
+            }
+            if (disableMenu != null)
+            {
+                disableMenu.Visibility = isService ? Visibility.Collapsed : Visibility.Visible;
+                disableMenu.IsEnabled = !isRegistry;
+            }
+            
+            // 服务专用菜单
             if (autoMenu != null) autoMenu.Visibility = isService ? Visibility.Visible : Visibility.Collapsed;
             if (manualMenu != null) manualMenu.Visibility = isService ? Visibility.Visible : Visibility.Collapsed;
             if (stopMenu != null) stopMenu.Visibility = isService ? Visibility.Visible : Visibility.Collapsed;

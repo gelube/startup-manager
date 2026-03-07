@@ -25,6 +25,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 
                 <Grid Grid.Row="0" Margin="0,0,0,15">
@@ -66,7 +67,19 @@
                     </ComboBox>
                 </Grid>
                 
-                <Border x:Name="ServiceModePanel" Grid.Row="3" Margin="0,0,0,15" Background="#E3F2FD" CornerRadius="8" Padding="15" Visibility="Collapsed">
+                <Grid x:Name="RegistryLocationPanel" Grid.Row="3" Margin="0,0,0,15" Visibility="Collapsed">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="位置:" VerticalAlignment="Center" FontWeight="Bold" Foreground="#1976D2"/>
+                    <ComboBox x:Name="RegistryLocationBox" Grid.Column="1" Padding="12,10" BorderBrush="#2196F3" BorderThickness="1" FontSize="13">
+                        <ComboBoxItem Content="当前用户 (HKCU)" IsSelected="True"/>
+                        <ComboBoxItem Content="系统全局 (HKLM) - 需管理员权限"/>
+                    </ComboBox>
+                </Grid>
+                
+                <Border x:Name="ServiceModePanel" Grid.Row="4" Margin="0,0,0,15" Background="#E3F2FD" CornerRadius="8" Padding="15" Visibility="Collapsed">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -81,7 +94,7 @@
                     </Grid>
                 </Border>
                 
-                <Border Grid.Row="4" CornerRadius="8" Padding="15">
+                <Border Grid.Row="5" CornerRadius="8" Padding="15">
                     <Border.Style>
                         <Style TargetType="Border">
                             <Setter Property="Background" Value="#FFF3E0"/>

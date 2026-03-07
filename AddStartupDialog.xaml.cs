@@ -39,9 +39,31 @@ namespace StartupManagerPro
 
         private void TypeBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            if (TypeBox == null || ServiceModePanel == null) return;
+            if (TypeBox == null || ServiceModePanel == null || RegistryLocationPanel == null) return;
             AddType = TypeBox.SelectedIndex;
+            
+            // 显示服务模式面板
             ServiceModePanel.Visibility = (AddType == 3) ? Visibility.Visible : Visibility.Collapsed;
+            
+            // 显示注册表位置选择面板
+            RegistryLocationPanel.Visibility = (AddType == 1) ? Visibility.Visible : Visibility.Collapsed;
+            
+            // 更新提示文字
+            UpdateInfoText();
+        }
+        
+        private void UpdateInfoText()
+        {
+            if (InfoText == null) return;
+            
+            InfoText.Text = AddType switch
+            {
+                0 => "提示：启动文件夹方式最简单，无需特殊权限。程序会在用户登录时自动启动。",
+                1 => "提示：注册表方式适合需要开机自启的程序。当前用户仅对当前账户生效，系统全局对所有账户生效。",
+                2 => "提示：计划任务方式功能强大，支持多种触发条件。需要管理员权限。",
+                3 => "提示：Windows 服务方式适合后台程序，开机即启动无需登录。需要管理员权限。",
+                _ => ""
+            };
         }
 
         private void OK_Click(object sender, RoutedEventArgs e)
@@ -105,13 +127,25 @@ namespace StartupManagerPro
         {
             try
             {
-                using var key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
-                key?.SetValue(StartupName, StartupPath);
+                // 根据用户选择决定使用 HKCU 还是 HKLM
+                bool useHKLM = RegistryLocationBox?.SelectedIndex == 1;
+                var root = useHKLM ? Registry.LocalMachine : Registry.CurrentUser;
+                string location = useHKLM ? "系统全局" : "当前用户";
+                
+                using var key = root.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
+                if (key == null)
+                {
+                    MessageBox.Show($"无法打开注册表键", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return false;
+                }
+                
+                key.SetValue(StartupName, StartupPath);
+                MessageBox.Show($"✅ 成功添加到注册表\n\n名称：{StartupName}\n路径：{StartupPath}\n位置：{location}", "成功", MessageBoxButton.OK, MessageBoxImage.Information);
                 return true;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"\u6DFB\u52A0\u5931\u8D25\uFF1A{ex.Message}", "\u9519\u8BEF", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"添加失败：{ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
         }

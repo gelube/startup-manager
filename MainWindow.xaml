@@ -247,18 +247,18 @@
                                         </Border>
                                     </ControlTemplate>
                                 </ContextMenu.Template>
-                                <MenuItem x:Name="EnableMenu" Header="启用" Foreground="#333" Background="#FFFFFF"/>
-                                <MenuItem x:Name="DisableMenu" Header="禁用" Foreground="#333" Background="#FFFFFF"/>
+                                <MenuItem x:Name="EnableMenu" Header="启用" Click="Enable_Click" Foreground="#333" Background="#FFFFFF"/>
+                                <MenuItem x:Name="DisableMenu" Header="禁用" Click="Disable_Click" Foreground="#333" Background="#FFFFFF"/>
                                 <Separator x:Name="ServiceSeparator" Background="#DCDFE6"/>
-                                <MenuItem x:Name="ServiceAutoMenu" Header="自动" Foreground="#333" Background="#FFFFFF"/>
-                                <MenuItem x:Name="ServiceManualMenu" Header="手动" Foreground="#333" Background="#FFFFFF"/>
-                                <MenuItem x:Name="ServiceStopMenu" Header="停止" Foreground="#333" Background="#FFFFFF"/>
-                                <MenuItem x:Name="ServiceStartMenu" Header="启动" Foreground="#333" Background="#FFFFFF"/>
+                                <MenuItem x:Name="ServiceAutoMenu" Header="自动" Click="ServiceAuto_Click" Foreground="#333" Background="#FFFFFF"/>
+                                <MenuItem x:Name="ServiceManualMenu" Header="手动" Click="ServiceManual_Click" Foreground="#333" Background="#FFFFFF"/>
+                                <MenuItem x:Name="ServiceStopMenu" Header="停止" Click="ServiceStop_Click" Foreground="#333" Background="#FFFFFF"/>
+                                <MenuItem x:Name="ServiceStartMenu" Header="启动" Click="ServiceStart_Click" Foreground="#333" Background="#FFFFFF"/>
                                 <Separator Background="#DCDFE6"/>
-                                <MenuItem Header="打开位置" Foreground="#333" Background="#FFFFFF"/>
-                                <MenuItem Header="属性" Foreground="#333" Background="#FFFFFF"/>
+                                <MenuItem Header="打开位置" Click="OpenLocation_Click" Foreground="#333" Background="#FFFFFF"/>
+                                <MenuItem Header="属性" Click="Properties_Click" Foreground="#333" Background="#FFFFFF"/>
                                 <Separator Background="#DCDFE6"/>
-                                <MenuItem Header="删除" Foreground="#333" Background="#FFFFFF"/>
+                                <MenuItem Header="删除" Click="Delete_Click" Foreground="#333" Background="#FFFFFF"/>
                             </ContextMenu>
                         </DataGrid.ContextMenu>
                         <DataGrid.ColumnHeaderStyle>

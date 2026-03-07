@@ -31,6 +31,11 @@ namespace StartupManagerPro
             Write("ERROR", $"{message} - {ex?.Message}\nStack: {ex?.StackTrace}");
         }
 
+        public static void Warning(string message)
+        {
+            Write("WARN", message);
+        }
+
         private static void Write(string level, string message)
         {
             try

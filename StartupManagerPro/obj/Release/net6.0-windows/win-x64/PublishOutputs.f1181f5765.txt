@@ -1,0 +1,2 @@
+C:\Users\Administrator\.openclaw\workspace\startup-manager-v3.1\StartupManagerPro\bin\Release\net6.0-windows\win-x64\publish\StartupManagerPro.pdb
+C:\Users\Administrator\.openclaw\workspace\startup-manager-v3.1\StartupManagerPro\bin\Release\net6.0-windows\win-x64\publish\StartupManagerPro.exe

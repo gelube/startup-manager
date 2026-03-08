@@ -54,6 +54,10 @@ dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=
 - C# 10
 - MVVM 模式
 
+## 依赖NSSM
+这里引用并感谢NSSM的开发者
+https://nssm.cc/
+
 ## 许可证
 
 MIT License

@@ -1,0 +1,21 @@
+<Application x:Class="StartupManagerPro.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <!-- 全局颜色主题 -->
+        <Color x:Key="PrimaryColor">#1976D2</Color>
+        <Color x:Key="PrimaryDarkColor">#1565C0</Color>
+        <Color x:Key="AccentColor">#2196F3</Color>
+        <Color x:Key="SuccessColor">#4CAF50</Color>
+        <Color x:Key="WarningColor">#FF9800</Color>
+        <Color x:Key="DangerColor">#F44336</Color>
+        <Color x:Key="PurpleColor">#9C27B0</Color>
+        <Color x:Key="TealColor">#00BCD4</Color>
+        
+        <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource PrimaryColor}"/>
+        <SolidColorBrush x:Key="SuccessBrush" Color="{StaticResource SuccessColor}"/>
+        <SolidColorBrush x:Key="WarningBrush" Color="{StaticResource WarningColor}"/>
+        <SolidColorBrush x:Key="DangerBrush" Color="{StaticResource DangerColor}"/>
+    </Application.Resources>
+</Application>

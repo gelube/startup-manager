@@ -1,5 +1,0 @@
-Z:\Apps\StartupManager-v3.1\MultiFile\StartupManagerPro.exe
-Z:\Apps\StartupManager-v3.1\MultiFile\StartupManagerPro.dll
-Z:\Apps\StartupManager-v3.1\MultiFile\StartupManagerPro.deps.json
-Z:\Apps\StartupManager-v3.1\MultiFile\StartupManagerPro.runtimeconfig.json
-Z:\Apps\StartupManager-v3.1\MultiFile\StartupManagerPro.pdb
